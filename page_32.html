@@ -153,7 +153,7 @@ audio{width:100%;margin:10px 0;border-radius:8px}
   </div>
 
   <div class="expiration-warning">
-    <strong>Important :</strong> Les liens audio expirent le <strong>28/03/2026</strong>. Completez la revue avant cette date.
+    <strong>Important :</strong> Les liens audio expirent le <strong>05/03/2026</strong>. Completez la revue avant cette date.
   </div>
 </div>
 
@@ -164,7 +164,7 @@ audio{width:100%;margin:10px 0;border-radius:8px}
 const PAGE_NUM = 32;
 const TOTAL_PAGES = 32;
 const TOTAL_SAMPLES = 3;
-const SAMPLES = [{"sample_id": "sample_00052", "speaker_id": "As7_TSLE", "line_num": 35, "transcription": "kɑblɑ̃", "expected": "tʁismœl", "agreement": 0.25, "group": "iologo", "duration": 1.01, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00052.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T104031Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=1b1dbf59471c6d33755fbee4eba26bd2b9f3c5e45f97a9c930a0686c8eb643c5"}, {"sample_id": "sample_00229", "speaker_id": "Elias_7 ans_Trouble attention", "line_num": 12, "transcription": "ʒimnɔstɑkl", "expected": "stʁotoʒɛm", "agreement": 0.14, "group": "evaleo", "duration": 2.03, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00229.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T104032Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=d01d900b49ae7efdfddd4642faa5c22c1816a3d6d5df52a9948a50d088773473"}, {"sample_id": "sample_01310", "speaker_id": "Rsl_8ans_TLO_MonPage_10 février", "line_num": 4, "transcription": "kɑnɑ", "expected": "?", "agreement": 0.0, "group": "unknown", "duration": 0.81, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01310.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T104033Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=ab4ffb0196f05829721f36234b339557f2078c30dfca5c3dc496a9a9238a6c43"}];
+const SAMPLES = [{"sample_id": "sample_00052", "speaker_id": "As7_TSLE", "line_num": 35, "transcription": "kɑblɑ̃", "expected": "tʁismœl", "agreement": 0.25, "group": "iologo", "duration": 1.01, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00052.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T133838Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=e21bd069261a626886ef0b81d43bb7b0af533170d53b2fc25f3ab01820f07ae4"}, {"sample_id": "sample_00229", "speaker_id": "Elias_7 ans_Trouble attention", "line_num": 12, "transcription": "ʒimnɔstɑkl", "expected": "stʁotoʒɛm", "agreement": 0.14, "group": "evaleo", "duration": 2.03, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00229.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T133838Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=4cdbd0cfaccfb6aaede11e4e475085f406780eb7a60bc529788831b91ef19f33"}, {"sample_id": "sample_01310", "speaker_id": "Rsl_8ans_TLO_MonPage_10 février", "line_num": 4, "transcription": "kɑnɑ", "expected": "?", "agreement": 0.0, "group": "unknown", "duration": 0.81, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01310.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T133839Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=e657db39978e794a0de90160b8cacc6902106cdc60617e8883a12b758e6d9db6"}];
 const REVIEWERS = [{"email": "soline.levillain@free.fr", "hash": "6c36ed39329a11e654921edab6e2a5b158d10a5bf92501063dee6db85fafd194"}, {"email": "emiliefaye24@hotmail.com", "hash": "6c36ed39329a11e654921edab6e2a5b158d10a5bf92501063dee6db85fafd194"}, {"email": "borel.steph@gmail.com", "hash": "6c36ed39329a11e654921edab6e2a5b158d10a5bf92501063dee6db85fafd194"}, {"email": "patrick.marmaroli@gmail.com", "hash": "6c36ed39329a11e654921edab6e2a5b158d10a5bf92501063dee6db85fafd194"}];
 const STORAGE_KEY = `logatome_review_p${PAGE_NUM}`;
 
@@ -487,7 +487,7 @@ function exportFinal() {
   }
   const fname = `revue_p${String(PAGE_NUM).padStart(2,'0')}_${currentUser.split('@')[0]}_${new Date().toISOString().slice(0,10)}.json`;
   downloadJson(data, fname);
-  alert('Fichier telecharge ! Envoyez-le par email a pmarmaroli@gmail.com');
+  alert('Fichier telecharge ! Envoyez-le par email a info@vocametrix.com');
 }
 
 function exportPartial() {
