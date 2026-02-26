@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revue Logatomes — Page 3/32</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:15px}
+.container{max-width:900px;margin:0 auto;background:#fff;border-radius:16px;padding:30px;box-shadow:0 15px 50px rgba(0,0,0,.25)}
+h1{color:#667eea;font-size:1.8em;margin-bottom:5px}
+.subtitle{color:#666;margin-bottom:20px;font-size:.95em}
+.auth-gate{text-align:center;padding:60px 20px}
+.auth-gate h2{color:#667eea;margin-bottom:25px}
+.auth-gate input{display:block;width:100%;max-width:360px;margin:10px auto;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:1em}
+.auth-gate input:focus{outline:none;border-color:#667eea}
+.auth-gate button{background:#667eea;color:#fff;padding:14px 40px;border:none;border-radius:8px;font-size:1.05em;font-weight:bold;cursor:pointer;margin-top:10px}
+.auth-gate button:hover{background:#5568d3}
+.auth-error{color:#dc2626;margin-top:10px;font-weight:bold}
+.progress-bar-container{background:#e5e7eb;border-radius:8px;height:28px;margin:15px 0;overflow:hidden;position:relative}
+.progress-bar-fill{background:linear-gradient(90deg,#667eea,#764ba2);height:100%;transition:width .3s;border-radius:8px}
+.progress-bar-text{position:absolute;top:0;left:0;right:0;text-align:center;line-height:28px;font-weight:bold;font-size:.85em;color:#333}
+.stats{background:#f8f9fa;padding:15px;border-radius:10px;margin-bottom:20px;display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px}
+.stat-item{text-align:center;min-width:80px}
+.stat-value{font-size:1.6em;color:#667eea;font-weight:bold}
+.stat-label{color:#666;font-size:.8em;margin-top:2px}
+.sample-card{background:#f8f9fa;border-radius:12px;padding:25px;margin-bottom:15px;border-left:5px solid #e5e7eb}
+.sample-card.reviewed-ok{border-left-color:#10b981}
+.sample-card.reviewed-correct{border-left-color:#f59e0b}
+.sample-card.reviewed-reject{border-left-color:#dc2626}
+.sample-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.sample-meta{color:#666;font-size:.85em}
+.sample-num{color:#667eea;font-weight:bold;font-size:1.1em}
+audio{width:100%;margin:10px 0;border-radius:8px}
+.transcription-row{display:flex;gap:20px;margin:12px 0;flex-wrap:wrap}
+.trans-box{flex:1;min-width:200px}
+.trans-box label{display:block;font-weight:600;margin-bottom:5px;color:#333;font-size:.9em}
+.trans-value{padding:10px;background:#fff;border:2px solid #e5e7eb;border-radius:8px;font-size:1.05em;min-height:42px;display:flex;align-items:center}
+.trans-value.expected{border-color:#667eea;background:#eef2ff;position:relative}
+.agreement-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.75em;font-weight:bold;margin-left:8px;vertical-align:middle}
+.edit-ref-btn{background:none;border:none;cursor:pointer;font-size:1em;padding:2px 6px;margin-left:auto;opacity:.5;transition:opacity .2s}
+.edit-ref-btn:hover{opacity:1}
+.ref-edit-input{flex:1;padding:6px 10px;border:2px solid #667eea;border-radius:6px;font-size:1.05em;font-family:inherit;min-width:0}
+.ref-edit-input:focus{outline:none;border-color:#4f46e5}
+.ref-edited{border-color:#8b5cf6;background:#f5f3ff}
+.ref-edited-badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:.7em;font-weight:bold;background:#8b5cf6;color:#fff;margin-left:6px}
+.agree-high{background:#d1fae5;color:#065f46}
+.agree-mid{background:#fef3c7;color:#92400e}
+.agree-low{background:#fee2e2;color:#991b1b}
+.action-buttons{display:flex;gap:10px;margin:15px 0;flex-wrap:wrap}
+.action-buttons button{flex:1;min-width:100px;padding:12px;border:3px solid transparent;border-radius:10px;font-size:.95em;font-weight:bold;cursor:pointer;transition:all .2s}
+.btn-ok{background:#d1fae5;color:#065f46;border-color:#10b981}
+.btn-ok:hover,.btn-ok.active{background:#10b981;color:#fff}
+.btn-correct{background:#fef3c7;color:#92400e;border-color:#f59e0b}
+.btn-correct:hover,.btn-correct.active{background:#f59e0b;color:#fff}
+.btn-reject{background:#fee2e2;color:#991b1b;border-color:#dc2626}
+.btn-reject:hover,.btn-reject.active{background:#dc2626;color:#fff}
+.correction-input{display:none;margin-top:10px}
+.correction-input.visible{display:block}
+.correction-input input{width:100%;padding:12px;border:2px solid #f59e0b;border-radius:8px;font-size:1.05em}
+.correction-input input:focus{outline:none;border-color:#667eea}
+.mos-section{margin:12px 0}
+.mos-section label{font-weight:600;font-size:.9em;color:#333;margin-bottom:6px;display:block}
+.mos-radios{display:flex;gap:6px;flex-wrap:wrap}
+.mos-radios label{display:flex;flex-direction:column;align-items:center;padding:6px 8px;border:2px solid #e5e7eb;border-radius:8px;cursor:pointer;font-size:.8em;font-weight:normal;min-width:55px;text-align:center;transition:all .2s}
+.mos-radios label:hover{border-color:#667eea;background:#eef2ff}
+.mos-radios input[type=radio]{margin:0 0 3px 0}
+.mos-radios input[type=radio]:checked+.mos-label{font-weight:bold}
+.mos-radios label.selected{border-color:#667eea;background:#eef2ff}
+.export-section{margin-top:25px;padding:20px;background:#f0fdf4;border-radius:12px;border:2px solid #10b981;text-align:center}
+.export-section.locked{background:#fee2e2;border-color:#dc2626}
+.btn-export{padding:15px 30px;font-size:1.1em;font-weight:bold;border:none;border-radius:10px;cursor:pointer;transition:all .2s}
+.btn-export-final{background:#10b981;color:#fff}
+.btn-export-final:hover{background:#059669}
+.btn-export-final:disabled{background:#9ca3af;cursor:not-allowed}
+.btn-export-partial{background:#667eea;color:#fff;margin-left:10px}
+.btn-export-partial:hover{background:#5568d3}
+.nav-links{display:flex;justify-content:space-between;margin-top:20px;gap:10px}
+.nav-links a{padding:12px 25px;background:#667eea;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;transition:all .2s}
+.nav-links a:hover{background:#5568d3}
+.nav-links a.disabled{background:#9ca3af;pointer-events:none}
+.expiration-warning{background:#fee2e2;color:#991b1b;padding:12px;border-radius:8px;margin-top:15px;text-align:center;font-size:.9em}
+.user-badge{display:inline-block;background:#667eea;color:#fff;padding:4px 12px;border-radius:15px;font-size:.85em;font-weight:bold}
+.logout-link{color:#dc2626;cursor:pointer;font-size:.85em;margin-left:10px;text-decoration:underline}
+.instructions{background:#e0e7ff;padding:18px;border-radius:10px;margin-bottom:20px}
+.instructions h3{color:#667eea;margin-bottom:8px;font-size:1em}
+.instructions ol{margin-left:18px;line-height:1.7;font-size:.9em}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ========== AUTH GATE ========== -->
+<div id="authGate" class="auth-gate">
+  <h2>Connexion</h2>
+  <p style="color:#666;margin-bottom:20px">Revue de la base de donnees logatome — Page 3/32</p>
+  <input type="email" id="authEmail" placeholder="Adresse email" autocomplete="email">
+  <input type="password" id="authPass" placeholder="Mot de passe" autocomplete="current-password">
+  <button onclick="doLogin()">Se connecter</button>
+  <div id="authError" class="auth-error hidden"></div>
+</div>
+
+<!-- ========== MAIN INTERFACE ========== -->
+<div id="mainInterface" class="hidden">
+  <h1>Revue Logatomes</h1>
+  <p class="subtitle">
+    Page 3/32 — 50 echantillons
+    <span class="user-badge" id="userBadge"></span>
+    <span class="logout-link" onclick="doLogout()">Deconnexion</span>
+  </p>
+
+  <div class="instructions">
+    <h3>Instructions</h3>
+    <ol>
+      <li>Ecoutez chaque segment audio</li>
+      <li>Comparez la <strong>transcription actuelle</strong> avec le <strong>logatome attendu</strong></li>
+      <li>Si le logatome attendu est incorrect, cliquez sur &#9998; pour le modifier</li>
+      <li>Choisissez une action : <strong>OK</strong> (correct), <strong>Corriger</strong> (saisir la bonne transcription) ou <strong>Rejeter</strong> (echantillon inutilisable)</li>
+      <li>Optionnel : attribuez un score MOS (qualite de production, 1-7)</li>
+      <li>Quand les 50 echantillons sont evalues, <strong>telechargez le JSON</strong> (obligatoire)</li>
+    </ol>
+  </div>
+
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    <div class="progress-bar-text" id="progressText">0/50 evalues</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-item"><div class="stat-value" id="statOk">0</div><div class="stat-label">OK</div></div>
+    <div class="stat-item"><div class="stat-value" id="statCorrect">0</div><div class="stat-label">Corriges</div></div>
+    <div class="stat-item"><div class="stat-value" id="statReject">0</div><div class="stat-label">Rejetes</div></div>
+    <div class="stat-item"><div class="stat-value" id="statRemain">50</div><div class="stat-label">Restants</div></div>
+  </div>
+
+  <div id="samplesContainer"></div>
+
+  <div class="export-section" id="exportSection">
+    <p id="exportMsg" style="margin-bottom:12px;font-weight:bold"></p>
+    <button class="btn-export btn-export-final" id="btnExportFinal" onclick="exportFinal()" disabled>
+      Telecharger le JSON (obligatoire)
+    </button>
+    <button class="btn-export btn-export-partial" onclick="exportPartial()">
+      Export partiel (sauvegarde)
+    </button>
+  </div>
+
+  <div class="nav-links">
+    <a href="page_02.html" >&#8592; Page precedente</a>
+    <a href="index.html">Hub</a>
+    <a href="page_04.html" >Page suivante &#8594;</a>
+  </div>
+
+  <div class="expiration-warning">
+    <strong>Important :</strong> Les liens audio expirent le <strong>28/03/2026</strong>. Completez la revue avant cette date.
+  </div>
+</div>
+
+</div>
+
+<script>
+// ======== DATA ========
+const PAGE_NUM = 3;
+const TOTAL_PAGES = 32;
+const TOTAL_SAMPLES = 50;
+const SAMPLES = [{"sample_id": "sample_00395", "speaker_id": "La8_TLE", "line_num": 56, "transcription": "stʁɑvɑ", "expected": "?", "agreement": 0.0, "group": "iologo", "duration": 1.07, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00395.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102710Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=93e4ba350cd1ff417a5ebc112ac854569f4c9003d2e242d2baf2741efe73029b"}, {"sample_id": "sample_01052", "speaker_id": "Eme_8ans_TSA_TLE_17février", "line_num": 4, "transcription": "viʁbo", "expected": "viʁmo", "agreement": 0.57, "group": "17fevrier", "duration": 0.84, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01052.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102711Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=9f51b43438ecd37e59890d94968e97c5d6a85ad06c879cc83149327600c0a1fd"}, {"sample_id": "sample_01447", "speaker_id": "Tne_8ans_TSLE_17février", "line_num": 26, "transcription": "buldɑ", "expected": "ɑʁkli", "agreement": 0.43, "group": "17fevrier", "duration": 1.01, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01447.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102711Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=3d35a0a8a5869f9046a1aea2ccd9877b7c79469702935c65955f9f5c999e3662"}, {"sample_id": "sample_00550", "speaker_id": "Mda_7 ans_TSLO_19 janvier", "line_num": 41, "transcription": "espilɑ", "expected": "wɑtyʁotɑ̃", "agreement": 0.17, "group": "iologo", "duration": 0.84, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00550.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102712Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=3643a354302aa4f7ca59795177f925846e48c0cf3807b9faf61ea9fc98f036b2"}, {"sample_id": "sample_01042", "speaker_id": "Ed12_TLO_17février", "line_num": 48, "transcription": "ɑʁklɑ", "expected": "ɑʁklɑ", "agreement": 0.5, "group": "17fevrier", "duration": 0.73, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01042.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102712Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=f7d17f3ee90d488f8caf4e29da5252165a09962cd739d26ef92e69b8e76e6619"}, {"sample_id": "sample_00402", "speaker_id": "La8_TLE", "line_num": 63, "transcription": "ɡuʃɑ̃", "expected": "?", "agreement": 0.0, "group": "iologo", "duration": 1.06, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00402.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102713Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=ae3793d510cc8d7a17a4f9073bb61d74854bc02fc809121ad233c0b74b1d2d8e"}, {"sample_id": "sample_00384", "speaker_id": "La8_TLE", "line_num": 45, "transcription": "blɔ̃kɑ", "expected": "øbʁolistiʁ", "agreement": 0.33, "group": "iologo", "duration": 1.04, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00384.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102714Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=7cdc53e7e9481b68ea11298655bd094136c2f7baa2888bf542924103591e5204"}, {"sample_id": "sample_01073", "speaker_id": "Eme_8ans_TSA_TLE_17février", "line_num": 25, "transcription": "ɑʁkli", "expected": "blyʁo", "agreement": 0.43, "group": "17fevrier", "duration": 1.05, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01073.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102715Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=41793c4c93eb07344c1be5b2c582275804e1fd1da06c9f9a4a18288c793d548e"}, {"sample_id": "sample_00967", "speaker_id": "Apei_10ans_TSLE sévère_17février", "line_num": 8, "transcription": "detʁyl", "expected": "detʁyl", "agreement": 0.43, "group": "17fevrier", "duration": 1.39, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00967.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102715Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=e2730302ee849c8b3dd551a470525ff6cb57900d20d78de134dd9cc52b651b9f"}, {"sample_id": "sample_01119", "speaker_id": "Ike_7 ans_TSLO_11 février", "line_num": 20, "transcription": "vwɑtuʁotɑ̃", "expected": "vwɑtuʁotɑ̃", "agreement": 0.33, "group": "liste_11fev", "duration": 1.83, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01119.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102716Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=4d4469a9d8fdc38c2065ef31635ce669e1aed6cf3d14a1725010e96d81bed67a"}, {"sample_id": "sample_00330", "speaker_id": "Fah_5_TDLO (contient monosyllabes)", "line_num": 55, "transcription": "ɑs", "expected": "ɑs", "agreement": 1.0, "group": "di_mixed", "duration": 0.76, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00330.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102716Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=b292520808b3cd5dabac1ebd09df27074ebfdbddf24335f847ed6c593e51a6d4"}, {"sample_id": "sample_01520", "speaker_id": "Yti_8ans_DI_TSLO_17février", "line_num": 28, "transcription": "klimɑ̃", "expected": "pø", "agreement": 0.5, "group": "17fevrier_di", "duration": 0.76, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01520.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102717Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=39260ab977e8791baba42d2718182bcb2a3ca3796ed4758dcd8a70fe206d6535"}, {"sample_id": "sample_01381", "speaker_id": "Tbe_8ans_TLO_17février", "line_num": 5, "transcription": "tʁemɔ̃", "expected": "dʁimɔ̃", "agreement": 0.57, "group": "17fevrier", "duration": 0.82, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01381.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102717Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=f72676643211f6b7979e65b5e052225d0e44698346331c0fc8cc5425cae85585"}, {"sample_id": "sample_01439", "speaker_id": "Tne_8ans_TSLE_17février", "line_num": 18, "transcription": "stœki", "expected": "stoki", "agreement": 0.43, "group": "17fevrier", "duration": 1.33, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01439.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102718Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=a6a4502a4413141d8823cfddf3d95364a960ff74af5eb6e5f3215c86b197384e"}, {"sample_id": "sample_01208", "speaker_id": "Mki_5ans_TLO_BGT_11 février", "line_num": 19, "transcription": "muʃiʃʁɔn", "expected": "vwɑtuʁotɑ̃", "agreement": 0.33, "group": "liste_11fev", "duration": 1.22, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01208.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102718Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=c0e85ffd299003bdcfe29a1a79fb99017217586c7d772ff86c5df00d79fc0ff7"}, {"sample_id": "sample_00810", "speaker_id": "Zar_10ans_TSLE_TLO", "line_num": 14, "transcription": "zɑsɛ̃", "expected": "fɑpɔs", "agreement": 0.27, "group": "iologo", "duration": 1.07, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00810.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102719Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=522322b9686ef9f4ec81eae53c1deac937d259ac983c0762a2fb236f8cbf5297"}, {"sample_id": "sample_00463", "speaker_id": "Lme_11ans_TSLE", "line_num": 38, "transcription": "vwɑtyʁotɑ̃", "expected": "kɑnɑʁɡlɔz", "agreement": 0.33, "group": "iologo", "duration": 1.15, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00463.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102720Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=188941693cec2322978103ff42fc02ab3ac02fc7882d9fbe0b3f2c8512311e73"}, {"sample_id": "sample_00101", "speaker_id": "Chloé N_10 ans_TSLE léger", "line_num": 0, "transcription": "ɑeʁepɛʁ", "expected": "ɑeʁypɛʁ", "agreement": 0.29, "group": "evaleo", "duration": 1.17, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00101.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102720Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=dd4aa8c5e0d49bf94e2efe4506a531dc68f448063e83aaa2a074121d4025cd79"}, {"sample_id": "sample_00551", "speaker_id": "Mda_7 ans_TSLO_19 janvier", "line_num": 42, "transcription": "blɑ̃kɑ", "expected": "øbʁɔlistiʁ", "agreement": 0.4, "group": "iologo", "duration": 0.96, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00551.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102720Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=fcd03b42e6eb7ce85d1f491e98749da744239fa66cc50b626bd205773ca6484c"}, {"sample_id": "sample_00200", "speaker_id": "Ed12_TLO_iologo liste 2_20 janv", "line_num": 32, "transcription": "blɑne", "expected": "blɑne", "agreement": 1.0, "group": "iologo_liste2", "duration": 1.46, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00200.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102721Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=53ff169f20aef9ab4450eda0a7fefc3333c1f9e9bd4ac064803bdab4bf4781b3"}, {"sample_id": "sample_01360", "speaker_id": "Ssok_8 ans_iologo Routine log bisyll_20 janv", "line_num": 30, "transcription": "liskɛ", "expected": "liskɛ", "agreement": 1.0, "group": "iologo_routine", "duration": 1.51, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01360.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102722Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=77800e66d85cd6d80643f0490aa8dcb390f952c307f7d1a2e132b968121d5475"}, {"sample_id": "sample_00589", "speaker_id": "Mdia_11 ans_Tdlo_20 janvier", "line_num": 18, "transcription": "wɑnø", "expected": "lɑspi", "agreement": 0.27, "group": "iologo", "duration": 1.09, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00589.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102722Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=adc03c79b4581f380bd1018491027cbe732328c19c4d350898e75ee62ea100ef"}, {"sample_id": "sample_00716", "speaker_id": "Tbe_8ans_TLO_10février", "line_num": 1, "transcription": "mɑɡu", "expected": "mɑɡu", "agreement": 0.45, "group": "iologo", "duration": 1.12, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00716.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102723Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=1f8e496ebea93c7777f1060ec42e397e6ef528c583dab3cbfd53a7969b037887"}, {"sample_id": "sample_00058", "speaker_id": "As7_TSLE", "line_num": 41, "transcription": "blɑ̃kɑ", "expected": "wɑtyʁotɑ̃", "agreement": 0.17, "group": "iologo", "duration": 0.84, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00058.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102723Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=6ae45fd926be130bf21ebadd49b3a240fe2da599085426e519d8f5a18dbaa456"}, {"sample_id": "sample_00518", "speaker_id": "Mda_7 ans_TSLO_19 janvier", "line_num": 9, "transcription": "sɑʒo", "expected": "wɑnø", "agreement": 0.55, "group": "iologo", "duration": 0.93, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00518.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102723Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=1afc7311a74ef2c714e12a98b685a50c225af3f7b5c1f1c5010a76197ef08ffd"}, {"sample_id": "sample_00956", "speaker_id": "Ama_6ans_TLO_DI_17février2", "line_num": 17, "transcription": "pɑtɑkɑ", "expected": "pɔ̃", "agreement": 0.33, "group": "17fevrier_di", "duration": 1.09, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00956.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102724Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=61b15b8080bc214c5ff40b5284c386f6dee8baad26e51c581c0ebc81d6180961"}, {"sample_id": "sample_00934", "speaker_id": "Ama_6ans_TLO_DI_17février", "line_num": 28, "transcription": "pø", "expected": "pø", "agreement": 0.5, "group": "17fevrier_di", "duration": 0.47, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00934.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102724Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=4061d8f5477446ed2455b209fbdacd7834d148ce975f16b9e9ed839d406abcf5"}, {"sample_id": "sample_00528", "speaker_id": "Mda_7 ans_TSLO_19 janvier", "line_num": 19, "transcription": "wɑnø", "expected": "kɑblɑ̃", "agreement": 0.27, "group": "iologo", "duration": 0.87, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00528.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102724Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=4ea9aa06d215ff1e0e8f55807b1259e855143878aaebc62d1fcfd40f9b9f0afc"}, {"sample_id": "sample_01448", "speaker_id": "Tne_8ans_TSLE_17février", "line_num": 27, "transcription": "klimɑ̃", "expected": "buldɑ", "agreement": 0.43, "group": "17fevrier", "duration": 1.06, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01448.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102725Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=bcbdb87208476786e5bb12a504931c7d74b48db6415b38e4da99536fe937a40a"}, {"sample_id": "sample_01330", "speaker_id": "Ssok_8 ans_iologo Routine log bisyll_20 janv", "line_num": 0, "transcription": "bœʁpi", "expected": "bœʁpi", "agreement": 1.0, "group": "iologo_routine", "duration": 0.86, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01330.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102725Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=e30551980eeb4834618b7dad6fb0f3f67fae1dea0eec04f3433d2bb6a3232100"}, {"sample_id": "sample_00982", "speaker_id": "Apei_10ans_TSLE sévère_17février", "line_num": 23, "transcription": "ʁɑspɛ̃", "expected": "fɑkuʁ", "agreement": 0.29, "group": "17fevrier", "duration": 0.93, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00982.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102726Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=3362c384aa02e898b77e10da328ad8464b7ebcf8e07c56ae9e278b3652cd12f7"}, {"sample_id": "sample_00322", "speaker_id": "Fah_5_TDLO (contient monosyllabes)", "line_num": 47, "transcription": "ɑpɑ", "expected": "ɑpɑ", "agreement": 1.0, "group": "di_mixed", "duration": 0.98, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00322.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102726Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=ee2c86d711240e6efff7c65ea4e5f41b7ff858798aa3621fed4d795bbbf69a23"}, {"sample_id": "sample_00206", "speaker_id": "Ed12_TLO_iologo liste 2_20 janv", "line_num": 38, "transcription": "tiʁpɑ", "expected": "tiʁpɑ", "agreement": 1.0, "group": "iologo_liste2", "duration": 1.6, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00206.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102726Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=dc16188d29682922b9e72609d80fa231310d8e3dd9deb3c53896227477402cdc"}, {"sample_id": "sample_00244", "speaker_id": "Eme_8ans_TSA_TLE", "line_num": 7, "transcription": "ylylyɡyl", "expected": "ɑpstɛkl", "agreement": 0.29, "group": "evaleo", "duration": 1.34, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00244.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102727Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=e1f4657a25301d581e4bd5e27e667b110419525f10cfc3d67a006f54e452d269"}, {"sample_id": "sample_01518", "speaker_id": "Yti_8ans_DI_TSLO_17février", "line_num": 26, "transcription": "ɑʁkli", "expected": "mwɑʁ", "agreement": 0.5, "group": "17fevrier_di", "duration": 1.08, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01518.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102727Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=d6a4a4389ce9ba4017c3a950ae5ab845f939388974542d1b80c6708a1b3af434"}, {"sample_id": "sample_01338", "speaker_id": "Ssok_8 ans_iologo Routine log bisyll_20 janv", "line_num": 8, "transcription": "ɡɑstyl", "expected": "ɡɑstyl", "agreement": 1.0, "group": "iologo_routine", "duration": 1.35, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01338.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102727Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=2067b98bb37f8d5da407bdc94438c9fac0ed25c0246ebfae3e3013b62dce8a44"}, {"sample_id": "sample_00586", "speaker_id": "Mdia_11 ans_Tdlo_20 janvier", "line_num": 15, "transcription": "zɑsɛ̃", "expected": "lɑspe", "agreement": 0.36, "group": "iologo", "duration": 1.2, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00586.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102728Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=f9c55494588cfe83c39fe71dde5ffb26a3b81ea38fcfbc0fc06c55ae83d7acf0"}, {"sample_id": "sample_00674", "speaker_id": "Nbo_6ans_TLO", "line_num": 40, "transcription": "jɑʃiniɡɔ̃", "expected": "vwɑtyʁotɑ̃", "agreement": 0.33, "group": "iologo", "duration": 1.2, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00674.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102728Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=3c74f546a5788f94bc0cdb8e4e95302e665a2fd5e0ff0719408ea8328a1f9333"}, {"sample_id": "sample_01471", "speaker_id": "Yhou_5ans_Tdlo sévère_17février", "line_num": 19, "transcription": "po", "expected": "ɡɑstyl", "agreement": 0.29, "group": "17fevrier", "duration": 0.59, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01471.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102729Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=b2c3dce68eb2bd41716df2ac6facfde66881dd20ee9c112532bc50eed50c63fe"}, {"sample_id": "sample_01262", "speaker_id": "Nsa_7 ans_TLE_11 février", "line_num": 43, "transcription": "blɑ̃kɑ", "expected": "lɑʒyniɡɔ̃", "agreement": 0.67, "group": "iologo", "duration": 0.87, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01262.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102729Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=e1d1f81f6e1b48b01cd518e728feef3477a81d11290bcbe4c6586eef63f5e3cc"}, {"sample_id": "sample_00298", "speaker_id": "Fah_5_TDLO (contient monosyllabes)", "line_num": 23, "transcription": "kɔlɡly", "expected": "kɔlɡly", "agreement": 1.0, "group": "di_mixed", "duration": 1.59, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00298.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102729Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=3ed4f3cc362116d95c69f6b4779e87b837d857f8c65848189c91a78e89e63b83"}, {"sample_id": "sample_01076", "speaker_id": "Eme_8ans_TSA_TLE_17février", "line_num": 28, "transcription": "sutɑk", "expected": "klimɑ̃", "agreement": 0.43, "group": "17fevrier", "duration": 0.95, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01076.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102730Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=4c84757348f157215e5c7968582b17e2dc17c6e970b4d83453355042144d01ff"}, {"sample_id": "sample_01203", "speaker_id": "Mki_5ans_TLO_BGT_11 février", "line_num": 14, "transcription": "kɑnɑʁɡlɔz", "expected": "kɑnɑʁɡlɔz", "agreement": 0.25, "group": "liste_11fev", "duration": 1.37, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01203.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102731Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=ab1998da470a9e281a6f37896e1711a29087454e90f368564221190e98b17015"}, {"sample_id": "sample_01363", "speaker_id": "Ssok_8 ans_iologo Routine log bisyll_20 janv", "line_num": 33, "transcription": "ʃiʁtɑ̃", "expected": "ʃiʁtɑ̃", "agreement": 1.0, "group": "iologo_routine", "duration": 1.53, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01363.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102732Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=bf073cb567de42be5cd4dfa0ab10ce34d2d5c6d248add4c67f5a01f43d0fd872"}, {"sample_id": "sample_00360", "speaker_id": "La8_TLE", "line_num": 21, "transcription": "pwɑnø", "expected": "blɑ̃kɑ", "agreement": 0.27, "group": "iologo", "duration": 1.17, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00360.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102733Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=8a0e81428d1c220d4485b100f24c97c5280d7cbb54143e03da79a82856686f60"}, {"sample_id": "sample_00045", "speaker_id": "As7_TSLE", "line_num": 28, "transcription": "fɑpɔs", "expected": "spliʃɑ", "agreement": 0.2, "group": "iologo", "duration": 1.13, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00045.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102734Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=e5a98a3e3fa7b9156f7c43279dbfe0c6d46b215c255711b95cd904aa2f407254"}, {"sample_id": "sample_01003", "speaker_id": "Ed12_TLO_17février", "line_num": 9, "transcription": "kɑtɔʁ", "expected": "ɡɑtɔʁ", "agreement": 0.57, "group": "17fevrier", "duration": 0.91, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01003.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102734Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=72947a82ff7afcdbef2304fc8d824ffb47736b610d7802aeb5115d0292b67310"}, {"sample_id": "sample_01479", "speaker_id": "Yhou_5ans_Tdlo sévère_17février", "line_num": 27, "transcription": "mɛ̃", "expected": "buldɑ", "agreement": 0.43, "group": "17fevrier", "duration": 0.65, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01479.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102735Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=7d9815c794338be21a015fab261886f9d24e9971dd5626ccbc66d7e80e9ef5ef"}, {"sample_id": "sample_01493", "speaker_id": "Yti_8ans_DI_TSLO_17février", "line_num": 1, "transcription": "vʁitɔ̃", "expected": "bɛ", "agreement": 0.33, "group": "17fevrier_di", "duration": 1.02, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_01493.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102735Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=6e83216587606929aacbaf6acb65fd10f7a861e385bf044df000313858a0a9b5"}, {"sample_id": "sample_00764", "speaker_id": "Tne_8ans_TSLE", "line_num": 7, "transcription": "siʃlɔ̃ʃ", "expected": "ɑpstɛkl", "agreement": 0.29, "group": "evaleo", "duration": 1.36, "audio_url": "https://s3.rbx.io.cloud.ovh.net/logatome-phonemizer-datasets-rd/review_segments/sample_00764.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4eceb1bb39024b87b9e18bb5f943a42b%2F20260226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260226T102736Z&X-Amz-Expires=2592000&X-Amz-SignedHeaders=host&X-Amz-Signature=a43dd02030b6ad16e612ba13a1022690ea9e098a6939728cde0c17a5bbb0c246"}];
+const REVIEWERS = [{"email": "soline.levillain@free.fr", "hash": "6c36ed39329a11e654921edab6e2a5b158d10a5bf92501063dee6db85fafd194"}, {"email": "emiliefaye24@hotmail.com", "hash": "6c36ed39329a11e654921edab6e2a5b158d10a5bf92501063dee6db85fafd194"}, {"email": "borel.steph@gmail.com", "hash": "6c36ed39329a11e654921edab6e2a5b158d10a5bf92501063dee6db85fafd194"}, {"email": "patrick.marmaroli@gmail.com", "hash": "6c36ed39329a11e654921edab6e2a5b158d10a5bf92501063dee6db85fafd194"}];
+const STORAGE_KEY = `logatome_review_p${PAGE_NUM}`;
+
+// ======== MOS LABELS (Dillon et al. 2004) ========
+const MOS_LABELS = {
+  7: "Parfaitement exacte",
+  6: "Quasi parfaite",
+  5: "Bonne, erreurs notables",
+  4: "Approximative, reconnaissable",
+  3: "Tres alteree",
+  2: "Meconnaissable",
+  1: "Echec total"
+};
+
+// ======== STATE ========
+let currentUser = null;
+let reviews = {};  // sample_id -> {action, corrected, mos}
+
+// ======== AUTH ========
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function doLogin() {
+  const email = document.getElementById('authEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('authPass').value;
+  const errDiv = document.getElementById('authError');
+  errDiv.classList.add('hidden');
+
+  if (!email || !pass) {
+    errDiv.textContent = 'Veuillez remplir tous les champs.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+
+  const hash = await sha256(pass);
+  const match = REVIEWERS.find(r => r.email === email && r.hash === hash);
+  if (!match) {
+    errDiv.textContent = 'Email ou mot de passe incorrect.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+
+  currentUser = email;
+  localStorage.setItem(STORAGE_KEY + '_user', email);
+  loadState();
+  showMain();
+}
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem(STORAGE_KEY + '_user');
+  document.getElementById('authGate').classList.remove('hidden');
+  document.getElementById('mainInterface').classList.add('hidden');
+}
+
+function showMain() {
+  document.getElementById('authGate').classList.add('hidden');
+  document.getElementById('mainInterface').classList.remove('hidden');
+  document.getElementById('userBadge').textContent = currentUser;
+  renderAllSamples();
+  updateStats();
+}
+
+// ======== STATE PERSISTENCE ========
+function saveState() {
+  if (!currentUser) return;
+  const key = STORAGE_KEY + '_' + currentUser;
+  localStorage.setItem(key, JSON.stringify(reviews));
+}
+
+function loadState() {
+  if (!currentUser) return;
+  const key = STORAGE_KEY + '_' + currentUser;
+  const stored = localStorage.getItem(key);
+  if (stored) {
+    try { reviews = JSON.parse(stored); } catch(e) { reviews = {}; }
+  } else {
+    reviews = {};
+  }
+}
+
+// ======== RENDER ========
+function agreementClass(a) {
+  if (a >= 0.7) return 'agree-high';
+  if (a >= 0.4) return 'agree-mid';
+  return 'agree-low';
+}
+
+function renderAllSamples() {
+  const container = document.getElementById('samplesContainer');
+  let html = '';
+  SAMPLES.forEach((s, idx) => {
+    const rev = reviews[s.sample_id] || {};
+    const action = rev.action || '';
+    const cardClass = action === 'ok' ? 'reviewed-ok' : action === 'correct' ? 'reviewed-correct' : action === 'reject' ? 'reviewed-reject' : '';
+    const corrInputVisible = action === 'correct' ? 'visible' : '';
+    const corrValue = rev.corrected || s.transcription;
+    const refEdited = rev.expected_corrected || null;
+    const mos = rev.mos || 0;
+
+    html += `
+    <div class="sample-card ${cardClass}" id="card_${idx}">
+      <div class="sample-header">
+        <div class="sample-meta">
+          <strong>${s.speaker_id}</strong> &mdash; ${s.group} &mdash; pos ${s.line_num} &mdash; ${s.duration}s
+        </div>
+        <div class="sample-num">#${idx+1}/${TOTAL_SAMPLES}</div>
+      </div>
+
+      <audio controls preload="none">
+        <source src="${s.audio_url}" type="audio/wav">
+      </audio>
+
+      <div class="transcription-row">
+        <div class="trans-box">
+          <label>Transcription actuelle</label>
+          <div class="trans-value">${s.transcription}</div>
+        </div>
+        <div class="trans-box">
+          <label>Logatome attendu</label>
+          <div class="trans-value expected ${refEdited ? 'ref-edited' : ''}" id="refDisplay_${idx}">
+            <span id="refText_${idx}">${refEdited || s.expected}</span>
+            <span class="agreement-badge ${agreementClass(s.agreement)}">${Math.round(s.agreement*100)}%</span>
+            ${refEdited ? '<span class="ref-edited-badge">modifie</span>' : ''}
+            <button class="edit-ref-btn" onclick="editRef(${idx})" title="Modifier la reference">&#9998;</button>
+          </div>
+          <div id="refEditRow_${idx}" style="display:none;gap:6px">
+            <input class="ref-edit-input" id="refInput_${idx}" value="${refEdited || s.expected}" placeholder="Reference corrigee">
+            <button class="btn-ok" style="min-width:auto;padding:8px 14px;flex:none" onclick="saveRef(${idx})">&#10003;</button>
+            <button class="btn-reject" style="min-width:auto;padding:8px 14px;flex:none" onclick="cancelRef(${idx})">&#10007;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-ok ${action==='ok'?'active':''}" onclick="setAction(${idx},'ok')">OK</button>
+        <button class="btn-correct ${action==='correct'?'active':''}" onclick="setAction(${idx},'correct')">Corriger</button>
+        <button class="btn-reject ${action==='reject'?'active':''}" onclick="setAction(${idx},'reject')">Rejeter</button>
+      </div>
+
+      <div class="correction-input ${corrInputVisible}" id="corr_${idx}">
+        <input type="text" value="${corrValue}" placeholder="Transcription corrigee"
+               onchange="setCorrected(${idx}, this.value)" onkeyup="setCorrected(${idx}, this.value)">
+      </div>
+
+      <div class="mos-section">
+        <label>Score MOS (optionnel) :</label>
+        <div class="mos-radios">
+          ${[7,6,5,4,3,2,1].map(v => `
+            <label class="${mos===v?'selected':''}" onclick="setMos(${idx},${v},this)">
+              <input type="radio" name="mos_${idx}" value="${v}" ${mos===v?'checked':''}><span class="mos-label">${v} — ${MOS_LABELS[v]}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+// ======== ACTIONS ========
+function setAction(idx, action) {
+  const s = SAMPLES[idx];
+  if (!reviews[s.sample_id]) reviews[s.sample_id] = {};
+  reviews[s.sample_id].action = action;
+
+  // Show/hide correction input
+  const corrDiv = document.getElementById('corr_' + idx);
+  if (action === 'correct') {
+    corrDiv.classList.add('visible');
+    if (!reviews[s.sample_id].corrected) {
+      reviews[s.sample_id].corrected = s.transcription;
+    }
+  } else {
+    corrDiv.classList.remove('visible');
+  }
+
+  // Update card border
+  const card = document.getElementById('card_' + idx);
+  card.className = 'sample-card reviewed-' + action;
+
+  // Update action button states
+  const btns = card.querySelectorAll('.action-buttons button');
+  btns.forEach(b => b.classList.remove('active'));
+  if (action === 'ok') btns[0].classList.add('active');
+  if (action === 'correct') btns[1].classList.add('active');
+  if (action === 'reject') btns[2].classList.add('active');
+
+  saveState();
+  updateStats();
+}
+
+function setCorrected(idx, value) {
+  const s = SAMPLES[idx];
+  if (!reviews[s.sample_id]) reviews[s.sample_id] = {};
+  reviews[s.sample_id].corrected = value.trim();
+  saveState();
+}
+
+function editRef(idx) {
+  const row = document.getElementById('refEditRow_' + idx);
+  row.style.display = 'flex';
+  const input = document.getElementById('refInput_' + idx);
+  input.focus();
+  input.select();
+}
+
+function saveRef(idx) {
+  const s = SAMPLES[idx];
+  const input = document.getElementById('refInput_' + idx);
+  const val = input.value.trim();
+  if (!reviews[s.sample_id]) reviews[s.sample_id] = {};
+  if (val && val !== s.expected) {
+    reviews[s.sample_id].expected_corrected = val;
+  } else {
+    delete reviews[s.sample_id].expected_corrected;
+  }
+  document.getElementById('refEditRow_' + idx).style.display = 'none';
+  saveState();
+  renderAllSamples();
+}
+
+function cancelRef(idx) {
+  document.getElementById('refEditRow_' + idx).style.display = 'none';
+}
+
+function setMos(idx, value, labelEl) {
+  const s = SAMPLES[idx];
+  if (!reviews[s.sample_id]) reviews[s.sample_id] = {};
+  reviews[s.sample_id].mos = value;
+
+  // Update visual selection
+  const container = labelEl.parentElement;
+  container.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
+  labelEl.classList.add('selected');
+
+  saveState();
+}
+
+// ======== STATS ========
+function updateStats() {
+  let ok = 0, correct = 0, reject = 0;
+  for (const [sid, rev] of Object.entries(reviews)) {
+    if (rev.action === 'ok') ok++;
+    else if (rev.action === 'correct') correct++;
+    else if (rev.action === 'reject') reject++;
+  }
+  const done = ok + correct + reject;
+  const remain = TOTAL_SAMPLES - done;
+  const pct = Math.round((done / TOTAL_SAMPLES) * 100);
+
+  document.getElementById('statOk').textContent = ok;
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statReject').textContent = reject;
+  document.getElementById('statRemain').textContent = remain;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = done + '/' + TOTAL_SAMPLES + ' evalues';
+
+  const btnFinal = document.getElementById('btnExportFinal');
+  const exportMsg = document.getElementById('exportMsg');
+  if (done >= TOTAL_SAMPLES) {
+    btnFinal.disabled = false;
+    exportMsg.textContent = 'Tous les echantillons ont ete evalues. Telechargez le JSON.';
+    document.getElementById('exportSection').classList.remove('locked');
+  } else {
+    btnFinal.disabled = true;
+    exportMsg.textContent = 'Il reste ' + remain + ' echantillon(s) a evaluer avant de pouvoir exporter.';
+    document.getElementById('exportSection').classList.add('locked');
+  }
+}
+
+// ======== EXPORT ========
+function buildExportData() {
+  const reviewList = [];
+  SAMPLES.forEach(s => {
+    const rev = reviews[s.sample_id] || {};
+    reviewList.push({
+      sample_id: s.sample_id,
+      speaker_id: s.speaker_id,
+      line_num: s.line_num,
+      group: s.group,
+      original: s.transcription,
+      expected: s.expected,
+      expected_corrected: rev.expected_corrected || null,
+      action: rev.action || null,
+      corrected: rev.action === 'correct' ? (rev.corrected || s.transcription) : null,
+      mos_score: rev.mos || null,
+    });
+  });
+
+  return {
+    reviewer: currentUser,
+    page: PAGE_NUM,
+    total_pages: TOTAL_PAGES,
+    timestamp: new Date().toISOString(),
+    total_samples: TOTAL_SAMPLES,
+    completed: reviewList.filter(r => r.action !== null).length,
+    reviews: reviewList,
+  };
+}
+
+function downloadJson(data, filename) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportFinal() {
+  const data = buildExportData();
+  const incomplete = data.reviews.filter(r => r.action === null).length;
+  if (incomplete > 0) {
+    alert('Il reste ' + incomplete + ' echantillon(s) non evalues.');
+    return;
+  }
+  const fname = `revue_p${String(PAGE_NUM).padStart(2,'0')}_${currentUser.split('@')[0]}_${new Date().toISOString().slice(0,10)}.json`;
+  downloadJson(data, fname);
+  alert('Fichier telecharge ! Envoyez-le par email a pmarmaroli@gmail.com');
+}
+
+function exportPartial() {
+  const data = buildExportData();
+  const fname = `revue_partielle_p${String(PAGE_NUM).padStart(2,'0')}_${currentUser.split('@')[0]}_${new Date().toISOString().slice(0,10)}.json`;
+  downloadJson(data, fname);
+}
+
+// ======== INIT ========
+document.addEventListener('DOMContentLoaded', () => {
+  // Check for saved session
+  const savedUser = localStorage.getItem(STORAGE_KEY + '_user');
+  if (savedUser) {
+    // Verify user is still in reviewer list
+    const match = REVIEWERS.find(r => r.email === savedUser);
+    if (match) {
+      currentUser = savedUser;
+      loadState();
+      showMain();
+      return;
+    }
+  }
+  // Show auth gate
+  document.getElementById('authGate').classList.remove('hidden');
+
+  // Enter key on password
+  document.getElementById('authPass').addEventListener('keypress', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+});
+</script>
+</body>
+</html>

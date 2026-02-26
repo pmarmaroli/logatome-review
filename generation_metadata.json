@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-02-26T14:41:41.747792",
+  "expiration_date": "2026-03-28T14:41:41.747792",
+  "total_samples": 1553,
+  "samples_per_page": 50,
+  "total_pages": 32,
+  "seed": 42,
+  "reviewers": [
+    "soline.levillain@free.fr",
+    "emiliefaye24@hotmail.com",
+    "borel.steph@gmail.com",
+    "patrick.marmaroli@gmail.com"
+  ],
+  "normalized_db": -6.0
+}
